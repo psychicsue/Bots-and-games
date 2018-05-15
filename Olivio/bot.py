@@ -7,7 +7,7 @@ SLACK_TOKEN = "xoxb-346353260501-lrRidik99JvpYTyrjZDS9egw"
 class Bot(object):
     def __init__(self):
         self.slack_client = SlackClient(SLACK_TOKEN)
-        self.name = "olivios"
+        self.name = "oli"
         self.id = self.get_bot_id()
         self.emoji = ":robot_face:"
 
@@ -29,6 +29,16 @@ class Bot(object):
             exit("Connection failed")
 
     def get_bot_id(self):
+        api_call = self.slack_client.api_call("users.list")
+        if api_call.get('ok'):
+            users = api_call.get('members')
+            for user in users:
+                print(user)
+                if 'name' in user and user.get('name') == self.name:
+                    return "<@" + user.get('id') + ">"
+            return None
+
+    def set_bot_emoji(self):
         api_call = self.slack_client.api_call("users.list")
         if api_call.get('ok'):
             users = api_call.get('members')
