@@ -1,13 +1,10 @@
 from flask import Flask, request, config
 from pymessenger.bot import Bot
-from imgurpython import ImgurClient
-import random
+from bot import bot_text_agent, respond_to
 
 app = Flask(__name__)
 ACCESS_TOKEN = ''
 VERIFY_TOKEN = ''
-ImgurClientID = ''
-ImgurClientSecret = ''
 bot = Bot(ACCESS_TOKEN)
 
 @app.route("/", methods=['GET', 'POST'])
@@ -19,12 +16,21 @@ def receive_message():
         output = request.get_json()
         for event in output['entry']:
             messaging = event['messaging']
+
             for message in messaging:
                 if message.get('message'):
+
                     recipient_id = message['sender']['id']
+
                     if message['message'].get('text'):
-                        response_sent_text = get_message()
-                        send_message(recipient_id, response_sent_text)
+
+                        text = message['message'].get('text')
+                        response = bot_text_agent(text)
+
+                        send_message(recipient_id, response)
+                    else:
+                        send_failure_message(recipient_id)
+
         return "Message Processed"
 
 def verify_fb_token(token_sent):
@@ -32,35 +38,17 @@ def verify_fb_token(token_sent):
         return request.args.get("hub.challenge")
     return 'Invalid verification token'
 
-def get_message():
-    response = "Hi! Here is Oli, your friends and companion"
-    return get_meme()
-
 def send_message(recipient_id, response):
     bot.send_text_message(recipient_id, response)
     return "success"
 
-def firstEntity(nlp, name):
-  return nlp and nlp.entities and nlp.entities[name] and nlp.entities[name][0]
+def send_failure_message(recipient_id):
+    bot.send_text_message(recipient_id, respond_to("CANT_UNDERSTAND"))
+    return "success"
 
-
-def handleMessage(message) :
-    greeting = firstEntity(message.nlp, 'greetings')
-    if greeting and greeting.confidence > 0.8:
-        bot.send_text_message('Hi there!')
-
-def get_meme():
-    try:
-        client = ImgurClient(ImgurClientID, ImgurClientSecret)
-    except BaseException as e:
-        print('[EROR] Error while authenticating with Imgur:', str(e))
-        return
-
-    items = client.gallery()
-    list = []
-    for item in items:
-        list.append(item.link)
-    return random.choice(list)
+def send_welcome_message(recipient_id):
+    bot.send_text_message(recipient_id, respond_to("FACEBOOK_WELCOME"))
+    return "success"
 
 if __name__ == "__main__":
     app.run()
