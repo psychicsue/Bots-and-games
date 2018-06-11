@@ -1,0 +1,7 @@
+hangman.sh is a hangman game written in bash
+
+Default set of words is movies.txt
+Then you can choose another one which is english-words.txt
+You can also upload your own file with words and play!
+
+Have fun!
