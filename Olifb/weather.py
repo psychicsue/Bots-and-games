@@ -2,7 +2,7 @@ import pyowm
 
 class Weather:
     def __init__(self, gpe=None, cord=None):
-        self.__api_key = '61eaa93d4afd86d636c1fee95daa2110'
+        self.__api_key = ''
         self.__owm = pyowm.OWM(self.__api_key)
         if cord is None:
             reg = self.__owm.city_id_registry()

@@ -1,9 +1,5 @@
 from nltk import word_tokenize, pos_tag, ne_chunk
-from nltk.corpus import treebank_chunk
 from nltk import Tree
-from nltk.chunk import tree2conlltags
-import nltk
-
 
 def get_chunks(text, label):
     text = text.title()

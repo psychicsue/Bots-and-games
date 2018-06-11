@@ -1,6 +1,6 @@
 from slackclient import SlackClient
 
-SLACK_TOKEN = "xoxb-346353260501-lrRidik99JvpYTyrjZDS9egw"
+SLACK_TOKEN = ""
 
 class ReactionEvent:
     def __init__(self):
